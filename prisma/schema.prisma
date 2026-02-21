@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model InventoryItem {
+  id            String   @id @default(cuid())
+  sku           String   @unique
+  itemId        String
+  title         String
+  model         String
+  color         String
+  size          String
+  stock         Int
+  purchasePrice Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Sale {
+  id           String   @id @default(cuid())
+  externalKey  String   @unique
+  soldAt       DateTime
+  sku          String
+  itemId       String
+  title        String
+  quantity     Int
+  amount       Float
+  commission   Float
+  purchasePrice Float
+  channel      String
+  createdAt    DateTime @default(now())
+
+  @@index([soldAt])
+  @@index([sku])
+}
+
+model SyncLog {
+  id        String   @id @default(cuid())
+  source    String
+  status    String
+  createdAt DateTime @default(now())
+}
+
+model IdempotencyKey {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  createdAt DateTime @default(now())
+}
